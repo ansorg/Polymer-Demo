@@ -12,6 +12,7 @@
     <link rel="import" href="bower_components/core-menu/core-menu.html">
     <link rel="import" href="bower_components/core-item/core-item.html">
     <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
+    <link rel="import" href="bower_components/core-pages/core-pages.html">
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body fullbleed="" vertical="" layout="" unresolved="">
@@ -20,15 +21,58 @@
 
 <polymer-element name="demo-app" attributes="mode">
     <template>
+        <style>
+            core-header-panel[drawer] {
+                background: #fff;
+            }
+            core-header-panel[main] {
+                background: #eee;
+            }
+
+            core-toolbar {
+                background-color: #007A5C;
+                color: #ffffff;
+            }
+             core-header-panel[drawer] core-toolbar {
+                background-color: #00946f;
+            }
+
+            p {
+                margin: 20px;
+                padding: 80px 20px;
+                border-radius: 20px;
+                background-color: #eee;
+            }
+
+            .content {
+                padding: 20px;
+            }
+            /* drawer is always visible on a wide screen
+               so menu button isn't required */
+            core-drawer-panel:not([narrow]) #menuButton {
+                display: none;
+            }
+
+            core-pages, core-pages section{
+                position: absolute;
+                top:0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                padding: 20px;
+
+
+            }
+        </style>
 
         <core-drawer-panel id="drawerPanel">
-                <core-header-panel drawer mode="[[mode]]">
-                    <core-toolbar><span>Menu</span></core-toolbar>
-                    <core-menu theme="core-light-theme">
-                        <core-item icon="settings" label="item1"></core-item>
-                        <core-item icon="settings" label="item2"></core-item>
-                    </core-menu>
-                </core-header-panel>
+            <core-header-panel drawer mode="[[mode]]">
+                <core-toolbar><span>Menu</span></core-toolbar>
+                <core-menu selected="{{selected}}" valueattr="id" id="navigation" theme="core-light-theme">
+                    <core-item id="p1" label="Page 1"></core-item>
+                    <core-item id="p2" label="Page 2"></core-item>
+                </core-menu>
+            </core-header-panel>
 
             <core-header-panel main mode="[[mode]]">
                 <core-toolbar>
@@ -36,7 +80,10 @@
                     <span flex="">Title</span>
                 </core-toolbar>
 
-                <div class="content">Content</div>
+                <core-pages selected="{{selected}}" valueattr="id" id="appPages">
+                    <section id="p1">Page 1</section>
+                    <section id="p2">Page 2</section>
+                </core-pages>
 
             </core-header-panel>
 
@@ -44,18 +91,30 @@
 
     </template>
     <script>
+        //http://stackoverflow.com/questions/25409037/using-polymer-core-pages-select-correct-page-based-on-url-fragment/25415487#25415487
         Polymer('demo-app', {
-            ready: function () {
+            domReady: function () {
                 console.log("ready", this, this.$);
 
                 var drawerPanel = this.$.drawerPanel;
                 this.$.menuButton.addEventListener('click', function () {
                     drawerPanel.togglePanel();
                 });
-
+                this.selected = "p2";
             },
             created: function () {
                 console.log("created", this, this.$);
+            },
+            navSelect: function () {
+                //console.log(this, this.$);
+                //if(this.$.navigation.selectedItem != null)
+                //    this.selected = this.$.navigation.selectedItem.id;
+            },
+            pageSelect : function () {
+                console.log(this, this.$);
+            },
+            selectedChanged: function() {
+                window.location.hash = this.selected;
             }
         });
     </script>
