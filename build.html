@@ -82,7 +82,11 @@
 
                 <core-pages selected="{{selected}}" valueattr="id" id="appPages">
                     <section id="p1">Page 1</section>
-                    <section id="p2">Page 2</section>
+                    <section id="p2">
+                        <template bind="">
+                            <candidate-list></candidate-list>
+                        </template>
+                    </section>
                 </core-pages>
 
             </core-header-panel>
@@ -115,6 +119,41 @@
             },
             selectedChanged: function() {
                 window.location.hash = this.selected;
+            }
+        });
+    </script>
+</polymer-element>
+
+<polymer-element name="candidate-list" >
+    <template>
+        <style>
+            img { visibility: visible; }
+        </style>
+        <div>
+            <h2>Page 2</h2>
+            <p><img id="image" src="http://www.html5canvastutorials.com/demos/assets/darth-vader.jpg" width="100" height="100" border="1"><br></p>
+        </div>
+    </template>
+    <script>
+        Polymer('candidate-list', {
+            ready: function () {
+                console.log(this.$.image);
+                this.$.image.onload = function () {
+                    var cvs = document.createElement('canvas');
+                    cvs.width = this.width;
+                    cvs.height = this.height;
+                    var ctx = cvs.getContext('2d');
+                    var d = { w : this.naturalWidth - this.width , h : this.naturalHeight - this.height };
+                    var crop = {
+                        x: d.w > d.h ? d.h/2 : 0,
+                        y: d.h > d.w ? d.w/2 : 0,
+                        w: d.w > d.h ? this.naturalHeight : this.naturalWidth,
+                        h: d.h > d.w ? this.naturalWidth : this.naturalHeight
+                    };
+                    ctx.drawImage(this, crop.x, crop.y, crop.w, crop.h, 0, 0, this.width, this.height );
+                    this.parentElement.appendChild(cvs);
+                };
+                //this.$.image.src = 'https://mdn.mozillademos.org/files/669/sample2d.jpg';
             }
         });
     </script>
