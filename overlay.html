@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Polymer Demo - Overlays</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0">
+    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="bower_components/polymer/polymer.html">
+    <link rel="import" href="bower_components/core-overlay/core-overlay.html">
+</head>
+<body fullbleed vertical layout>
+
+<polymer-element name="x-dialog">
+    <template>
+        <style>
+            core-overlay { background-color: floralwhite; border: 10px outset silver; }
+            div { width: 100%; height: 100%; overflow: hidden;
+                position: relative;}
+            iframe { width: 100%; height: 100%; border: none; }
+        </style>
+        <core-overlay id="overlay" fit vertical layout center  >
+            <div flex>
+                <iframe fit src="bower_components/core-scaffold/demo.html"></iframe>
+            </div>
+            <button core-overlay-toggle>OK</button>
+        </core-overlay>
+    </template>
+    <script>
+        Polymer('x-dialog', {
+            toggle: function () {
+                console.info('toggle');
+                this.$.overlay.toggle();
+            }
+        });
+    </script>
+</polymer-element>
+
+<polymer-element name="my-app">
+    <template>
+        <div fit>
+            <button id="btnDialogOpener">Show overlay</button>
+        </div>
+
+        <x-dialog id="dlgOverlay"></x-dialog>
+
+    </template>
+    <script>
+        Polymer('my-app', {
+            domReady: function () {
+                var elem = this;
+                this.$.btnDialogOpener.onclick = function(){
+                    elem.$.dlgOverlay.toggle();
+                };
+            }
+        });
+    </script>
+</polymer-element>
+
+<my-app></my-app>
+
+</body>
+</html>
